@@ -1,0 +1,6 @@
+@LeoBeach_HostAddress = http://localhost:5165
+
+GET {{LeoBeach_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

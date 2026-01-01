@@ -1,0 +1,46 @@
+# Build / output
+bin/
+obj/
+out/
+*.dll
+*.exe
+*.pdb
+*.app
+
+# User files
+*.user
+*.suo
+*.vs/
+.vscode/
+
+# Database / secrets
+*.db
+appsettings.Development.json
+*.env
+
+# Logs
+*.log
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# NuGet
+*.nupkg
+packages/
+# NuGet v3
+*.snupkg
+
+# JetBrains Rider
+.idea/
+
+# Visual Studio cache
+*.cache
+*.ide
+*.sln.docstates
+
+# Optional: publish folder
+publish/
+
+# EF Core Migrations SQL scripts (opzionale se vuoi ignorare)
+Migrations/*.sql
