@@ -1,9 +1,9 @@
-﻿using LeoBeach.Api.Infrastructure.Persistence;
+﻿using LeoBeach.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 
-namespace LeoBeach.Api.Infrastructure.Persistence;
+namespace LeoBeach.Infrastructure.Persistence;
 
 public class LeoBeachDbContextFactory : IDesignTimeDbContextFactory<LeoBeachDbContext>
 {

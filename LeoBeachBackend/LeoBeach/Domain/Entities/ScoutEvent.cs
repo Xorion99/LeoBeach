@@ -1,4 +1,4 @@
-﻿namespace LeoBeach.Api.Domain.Entities;
+﻿namespace LeoBeach.Domain.Entities;
 
 public class ScoutEvent
 {

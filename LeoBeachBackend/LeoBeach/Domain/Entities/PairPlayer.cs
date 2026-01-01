@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace LeoBeach.Api.Domain.Entities;
+namespace LeoBeach.Domain.Entities;
 
 [Index(nameof(PlayerId), nameof(PairId), IsUnique = true)]
 public class PairPlayer

@@ -1,4 +1,4 @@
-﻿using LeoBeach.Api.Domain.Entities;
+﻿using LeoBeach.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 public class LeoBeachDbContext : DbContext

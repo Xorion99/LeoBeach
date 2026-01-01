@@ -1,6 +1,6 @@
-﻿using LeoBeach.Api.Domain.Enums;
+﻿using LeoBeach.Domain.Enums;
 
-namespace LeoBeach.Api.Domain.Entities;
+namespace LeoBeach.Domain.Entities;
 
 public class User
 {

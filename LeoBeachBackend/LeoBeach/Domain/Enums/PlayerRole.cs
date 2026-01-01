@@ -1,4 +1,4 @@
-﻿namespace LeoBeach.Api.Domain.Enums;
+﻿namespace LeoBeach.Domain.Enums;
 
 public enum PlayerRole
 {

@@ -21,7 +21,7 @@ namespace LeoBeach.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("LeoBeach.Api.Domain.Entities.Pair", b =>
+            modelBuilder.Entity("LeoBeach.Domain.Entities.Pair", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -45,7 +45,7 @@ namespace LeoBeach.Migrations
                     b.ToTable("Pairs");
                 });
 
-            modelBuilder.Entity("LeoBeach.Api.Domain.Entities.PairPlayer", b =>
+            modelBuilder.Entity("LeoBeach.Domain.Entities.PairPlayer", b =>
                 {
                     b.Property<Guid>("PlayerId")
                         .HasColumnType("uuid");
@@ -72,7 +72,7 @@ namespace LeoBeach.Migrations
                     b.ToTable("PairPlayers");
                 });
 
-            modelBuilder.Entity("LeoBeach.Api.Domain.Entities.Player", b =>
+            modelBuilder.Entity("LeoBeach.Domain.Entities.Player", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -109,7 +109,7 @@ namespace LeoBeach.Migrations
                     b.ToTable("Players");
                 });
 
-            modelBuilder.Entity("LeoBeach.Api.Domain.Entities.Scout", b =>
+            modelBuilder.Entity("LeoBeach.Domain.Entities.Scout", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -137,7 +137,7 @@ namespace LeoBeach.Migrations
                     b.ToTable("Scouts");
                 });
 
-            modelBuilder.Entity("LeoBeach.Api.Domain.Entities.ScoutEvent", b =>
+            modelBuilder.Entity("LeoBeach.Domain.Entities.ScoutEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -167,7 +167,7 @@ namespace LeoBeach.Migrations
                     b.ToTable("ScoutEvents");
                 });
 
-            modelBuilder.Entity("LeoBeach.Api.Domain.Entities.Skill", b =>
+            modelBuilder.Entity("LeoBeach.Domain.Entities.Skill", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -192,7 +192,7 @@ namespace LeoBeach.Migrations
                     b.ToTable("Skills");
                 });
 
-            modelBuilder.Entity("LeoBeach.Api.Domain.Entities.User", b =>
+            modelBuilder.Entity("LeoBeach.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -224,15 +224,15 @@ namespace LeoBeach.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("LeoBeach.Api.Domain.Entities.PairPlayer", b =>
+            modelBuilder.Entity("LeoBeach.Domain.Entities.PairPlayer", b =>
                 {
-                    b.HasOne("LeoBeach.Api.Domain.Entities.Pair", "Pair")
+                    b.HasOne("LeoBeach.Domain.Entities.Pair", "Pair")
                         .WithMany("PairPlayers")
                         .HasForeignKey("PairId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LeoBeach.Api.Domain.Entities.Player", "Player")
+                    b.HasOne("LeoBeach.Domain.Entities.Player", "Player")
                         .WithMany("PairPlayers")
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -243,9 +243,9 @@ namespace LeoBeach.Migrations
                     b.Navigation("Player");
                 });
 
-            modelBuilder.Entity("LeoBeach.Api.Domain.Entities.Scout", b =>
+            modelBuilder.Entity("LeoBeach.Domain.Entities.Scout", b =>
                 {
-                    b.HasOne("LeoBeach.Api.Domain.Entities.Pair", "Pair")
+                    b.HasOne("LeoBeach.Domain.Entities.Pair", "Pair")
                         .WithMany()
                         .HasForeignKey("PairId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -254,15 +254,15 @@ namespace LeoBeach.Migrations
                     b.Navigation("Pair");
                 });
 
-            modelBuilder.Entity("LeoBeach.Api.Domain.Entities.ScoutEvent", b =>
+            modelBuilder.Entity("LeoBeach.Domain.Entities.ScoutEvent", b =>
                 {
-                    b.HasOne("LeoBeach.Api.Domain.Entities.Scout", "Scout")
+                    b.HasOne("LeoBeach.Domain.Entities.Scout", "Scout")
                         .WithMany("Events")
                         .HasForeignKey("ScoutId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LeoBeach.Api.Domain.Entities.Skill", "Skill")
+                    b.HasOne("LeoBeach.Domain.Entities.Skill", "Skill")
                         .WithMany()
                         .HasForeignKey("SkillId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -273,17 +273,17 @@ namespace LeoBeach.Migrations
                     b.Navigation("Skill");
                 });
 
-            modelBuilder.Entity("LeoBeach.Api.Domain.Entities.Pair", b =>
+            modelBuilder.Entity("LeoBeach.Domain.Entities.Pair", b =>
                 {
                     b.Navigation("PairPlayers");
                 });
 
-            modelBuilder.Entity("LeoBeach.Api.Domain.Entities.Player", b =>
+            modelBuilder.Entity("LeoBeach.Domain.Entities.Player", b =>
                 {
                     b.Navigation("PairPlayers");
                 });
 
-            modelBuilder.Entity("LeoBeach.Api.Domain.Entities.Scout", b =>
+            modelBuilder.Entity("LeoBeach.Domain.Entities.Scout", b =>
                 {
                     b.Navigation("Events");
                 });
