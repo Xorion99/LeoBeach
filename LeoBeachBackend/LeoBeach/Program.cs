@@ -1,5 +1,6 @@
-using LeoBeach.Interfaces;
 using LeoBeach.Infrastructure.Persistence;
+using LeoBeach.Interfaces;
+using LeoBeach.Services;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -13,6 +14,18 @@ builder.Services.AddDbContext<LeoBeachDbContext>(options =>
     )
 );
 
+
+// --- ABILITA CORS ---
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactDev", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173") // porta Vite frontend
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -21,10 +34,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IPairService, PairService>();
+builder.Services.AddScoped<IPlayerService, PlayerService>();
+
+
 
 
 var app = builder.Build();
 
+app.UseCors("AllowReactDev");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
