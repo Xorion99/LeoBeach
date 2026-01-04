@@ -1,4 +1,4 @@
-🚀 LeoBeach - Beach Volleyball Manager
+**🚀 LeoBeach - Beach Volleyball Manager**
 
 **LeoBeach** è l’app cross-platform pensata per rivoluzionare il beach volley!
 
