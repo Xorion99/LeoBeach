@@ -30,6 +30,20 @@ public class LeoBeachDbContext : DbContext
         modelBuilder.Entity<Scout>().HasQueryFilter(s => s.DeletedAt == null);
         modelBuilder.Entity<ScoutEvent>().HasQueryFilter(se => se.DeletedAt == null);
         modelBuilder.Entity<User>().HasQueryFilter(u => u.DeletedAt == null);
+
+
+
+        // Relazione ScoutEvent -> Player (opzionale)
+        modelBuilder.Entity<ScoutEvent>()
+            .HasOne(se => se.Player)
+            .WithMany() // se non vuoi collezione in Player
+            .HasForeignKey(se => se.PlayerId)
+            .OnDelete(DeleteBehavior.Restrict); // evita cascade delete
+
+        // Altre configurazioni come indici unici ecc.
+        modelBuilder.Entity<PairPlayer>()
+            .HasIndex(pp => new { pp.PlayerId, pp.PairId })
+            .IsUnique();
     }
 
 }

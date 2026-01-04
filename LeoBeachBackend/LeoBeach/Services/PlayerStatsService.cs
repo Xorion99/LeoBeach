@@ -16,14 +16,11 @@ public class PlayerStatsService : IPlayerStatsService
 
     public async Task<PlayerStatsDto> GetPlayerStatsAsync(Guid playerId)
     {
-        var events = await _context.ScoutEvents
+        // Eventi del singolo
+        var playerEvents = await _context.ScoutEvents
             .Where(e =>
                 e.DeletedAt == null &&
-                e.Scout.DeletedAt == null &&
-                e.Scout.Pair.PairPlayers.Any(pp =>
-                    pp.PlayerId == playerId &&
-                    pp.DeletedAt == null
-                )
+                e.PlayerId == playerId
             )
             .Select(e => new
             {
@@ -33,7 +30,22 @@ public class PlayerStatsService : IPlayerStatsService
             })
             .ToListAsync();
 
-        var skills = events
+        // Eventi di coppia (PlayerId null ma nella stessa coppia)
+        var pairEvents = await _context.ScoutEvents
+            .Where(e =>
+                e.DeletedAt == null &&
+                e.PlayerId == null &&
+                e.Scout.Pair.PairPlayers.Any(pp => pp.PlayerId == playerId && pp.DeletedAt == null)
+            )
+            .Select(e => new
+            {
+                e.Skill.Code,
+                e.Skill.Description,
+                e.Value
+            })
+            .ToListAsync();
+
+        var playerSkills = playerEvents
             .GroupBy(e => new { e.Code, e.Description })
             .Select(g => new SkillStatsDto
             {
@@ -45,10 +57,27 @@ public class PlayerStatsService : IPlayerStatsService
             })
             .ToList();
 
+        var pairSkills = pairEvents
+            .GroupBy(e => new { e.Code, e.Description })
+            .Select(g => new SkillStatsDto
+            {
+                SkillCode = g.Key.Code,
+                SkillDescription = g.Key.Description,
+                Good = g.Count(x => x.Value == 1),
+                Neutral = g.Count(x => x.Value == 0),
+                Bad = g.Count(x => x.Value == -1)
+            })
+            .ToList();
+
+        var player = await _context.Players.FindAsync(playerId);
+
         return new PlayerStatsDto
         {
             PlayerId = playerId,
-            Skills = skills
+            PlayerName = player != null ? $"{player.FirstName} {player.LastName}" : null,
+            Skills = playerSkills,
+            PairSkills = pairSkills
         };
     }
+
 }
