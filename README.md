@@ -22,37 +22,38 @@ Se due giocatori vogliono giocare ma non hanno compagni, **LeoBeach** offrirà u
 
 
 🎯 Setup Completo - Passo per Passo
-1. Prerequisiti (Installa prima di tutto)
-# .NET 8 SDK
+# 1. Prerequisiti (Installa prima di tutto)
+.NET 8 SDK
 winget install Microsoft.DotNet.SDK.8  # Windows
-# O scarica da: https://dotnet.microsoft.com/download/dotnet/8.0
+O scarica da: https://dotnet.microsoft.com/download/dotnet/8.0
 
-# Node.js 18+
+Node.js 18+
 winget install OpenJS.NodeJS  # Windows
 
-# PostgreSQL 15+
-# Scarica da: https://www.postgresql.org/download/
-# Ricorda user: postgres | password: (sceglila tu)
+PostgreSQL 15+
+Scarica da: https://www.postgresql.org/download/
+Ricorda user: postgres | password: (sceglila tu)
 
 
-2. Clona il Repository
+# 2. Clona il Repository
 git clone https://github.com/Xorion99/LeoBeach.git
 cd LeoBeach
 
-3. Backend (.NET API)
+# 3. Backend (.NET API)
 LeoBeach/
 ├── Api/           # Backend .NET
 ├── ClientApp/     # Frontend React
 └── Database/      # Script SQL
 
-# Vai nella cartella API
-cd Api
+Vai nella cartella API
+- cd Api
 
-# Ripristina pacchetti
-dotnet restore
+Ripristina pacchetti
+- dotnet restore
 
-# Configura appsettings.json
-
+Configura 
+appsettings.json
+```json 
 📝 appsettings.json esempio:
 {
   "ConnectionStrings": {
@@ -65,15 +66,15 @@ dotnet restore
   },
   "AllowedHosts": "*"
 }
+```
 
-
-# Migrazioni DB
+**Migrazioni DB** 
 dotnet ef database update
 
-# Avvia API 
+Avvia API 
 dotnet run
 
-4. Database PostgreSQL
+# 4. Database PostgreSQL
 -- Crea database
 CREATE DATABASE LeoBeach;
 
@@ -81,22 +82,22 @@ CREATE DATABASE LeoBeach;
 -- Database/Schema.sql
 
 
-# Connessione tipica:
+**Connessione tipica:**
 
 Server: localhost:5432
 Database: LeoBeach
 User: postgres
 Password: la_tua_password
 
-5. Frontend (React)
+# 5. Frontend (React)
 
-# Nuova terminale
+Nuovo terminale
 cd ClientApp
 
-# Installa dipendenze
+**Installa dipendenze**
 npm install
 
-# Avvia React (porta 3000)
+**Avvia React (porta 3000)**
 npm start
 
 ✅ Frontend running su: http://localhost:3000
