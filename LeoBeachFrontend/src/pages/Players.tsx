@@ -21,7 +21,7 @@ export const Players: React.FC = () => {
 
   return (
     <div>
-      <h2>Players</h2>
+      <h2>Giocatori</h2>
       {players.map(p => (
         <PlayerCard key={p.id} {...p} onDelete={handleDelete} />
       ))}
