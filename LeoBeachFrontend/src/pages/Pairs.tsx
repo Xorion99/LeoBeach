@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { getPairs, deletePair, getPlayers, createPair } from "../api";
 import { PairCard } from "../components/PairCard";
+import { CustomDialog } from "../components/CustomDialog";
 import {
   Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   TextField,
   FormControl,
   InputLabel,
@@ -99,7 +96,6 @@ export const Pairs: React.FC = () => {
 
       {/* Lista coppie */}
       {pairs.map((p) => {
-        // Trasforma playerIds in array di oggetti Player
         const playersInPair = (p.playerIds || [])
           .map((id) => allPlayers.find((pl) => pl.id === id))
           .filter(Boolean);
@@ -115,68 +111,174 @@ export const Pairs: React.FC = () => {
         );
       })}
 
-      {/* DIALOG per creare coppia */}
-      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Crea nuova coppia</DialogTitle>
-        <DialogContent
-          sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}
-        >
-          <TextField
-            label="Nome coppia"
-            value={newPairName}
-            onChange={(e) => setNewPairName(e.target.value)}
-          />
-
-          <FormControl>
-            <InputLabel>Giocatori (2)</InputLabel>
-            <Select
-              multiple
-              value={selectedPlayerIds}
-              onChange={(e) => {
-                const value =
-                  typeof e.target.value === "string"
-                    ? e.target.value.split(",")
-                    : e.target.value;
-                // Limita a 2 giocatori
-                if (value.length <= 2) setSelectedPlayerIds(value);
+ {/* DIALOG per creare coppia usando CustomDialog */}
+      <CustomDialog
+        open={dialogOpen}
+        title="Crea nuova coppia"
+        onClose={handleCloseDialog}
+        onConfirm={handleCreatePair}
+        confirmText="Salva"
+        cancelText="Annulla"
+      >
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 3, mt: 2 }}>
+          {/* Nome coppia con icona */}
+          <Box>
+            <Typography 
+              variant="subtitle2" 
+              sx={{ 
+                mb: 1, 
+                fontWeight: 600,
+                color: "text.secondary",
+                display: "flex",
+                alignItems: "center",
+                gap: 1
               }}
-              renderValue={(selected) => (
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                  {selected.map((id) => {
-                    const player = allPlayers.find((p) => p.id === id);
-                    return (
-                      <Chip
-                        key={id}
-                        label={
-                          player ? `${player.firstName} ${player.lastName}` : ""
-                        }
-                      />
-                    );
-                  })}
-                </Box>
-              )}
             >
-              {allPlayers.map((p) => (
-                <MenuItem key={p.id} value={p.id}>
-                  {p.firstName} {p.lastName}
-                </MenuItem>
-              ))}
-            </Select>
-            {selectedPlayerIds.length < 2 && (
-              <Typography variant="caption" color="error">
-                Seleziona esattamente 2 giocatori
-              </Typography>
-            )}
-          </FormControl>
-        </DialogContent>
+              ✨ Nome Coppia
+            </Typography>
+            <TextField
+              fullWidth
+              placeholder="Es: Team Rocket, Dream Team..."
+              value={newPairName}
+              onChange={(e) => setNewPairName(e.target.value)}
+              variant="outlined"
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  backgroundColor: 'rgba(0, 0, 0, 0.02)',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                  },
+                  '&.Mui-focused': {
+                    backgroundColor: 'white',
+                  }
+                }
+              }}
+            />
+          </Box>
 
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Annulla</Button>
-          <Button variant="contained" onClick={handleCreatePair}>
-            Salva
-          </Button>
-        </DialogActions>
-      </Dialog>
+          {/* Selezione giocatori moderna */}
+          <Box>
+            <Typography 
+              variant="subtitle2" 
+              sx={{ 
+                mb: 1, 
+                fontWeight: 600,
+                color: "text.secondary",
+                display: "flex",
+                alignItems: "center",
+                gap: 1
+              }}
+            >
+              👥 Giocatori ({selectedPlayerIds.length}/2)
+            </Typography>
+            <FormControl fullWidth>
+              <Select
+                multiple
+                displayEmpty
+                value={selectedPlayerIds}
+                onChange={(e) => {
+                  const value = typeof e.target.value === "string" ? e.target.value.split(",") : e.target.value;
+                  if (value.length <= 2) setSelectedPlayerIds(value);
+                }}
+                renderValue={(selected) => {
+                  if (selected.length === 0) {
+                    return <Typography color="text.secondary">Seleziona 2 giocatori...</Typography>;
+                  }
+                  return (
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                      {selected.map((id) => {
+                        const player = allPlayers.find((p) => p.id === id);
+                        return (
+                          <Chip 
+                            key={id} 
+                            label={player ? `${player.firstName} ${player.lastName}` : ""} 
+                            size="medium"
+                            sx={{
+                              backgroundColor: 'primary.main',
+                              color: 'white',
+                              fontWeight: 500,
+                              '& .MuiChip-deleteIcon': {
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                '&:hover': {
+                                  color: 'white'
+                                }
+                              }
+                            }}
+                          />
+                        );
+                      })}
+                    </Box>
+                  );
+                }}
+                sx={{
+                  borderRadius: 2,
+                  backgroundColor: 'rgba(0, 0, 0, 0.02)',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                  },
+                  '&.Mui-focused': {
+                    backgroundColor: 'white',
+                  }
+                }}
+              >
+                {allPlayers.map((p) => (
+                  <MenuItem 
+                    key={p.id} 
+                    value={p.id}
+                    disabled={selectedPlayerIds.length >= 2 && !selectedPlayerIds.includes(p.id)}
+                    sx={{
+                      py: 1.5,
+                      '&.Mui-selected': {
+                        backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                        '&:hover': {
+                          backgroundColor: 'rgba(25, 118, 210, 0.12)',
+                        }
+                      }
+                    }}
+                  >
+                    {p.firstName} {p.lastName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            {selectedPlayerIds.length < 2 && (
+              <Box 
+                sx={{ 
+                  mt: 1.5, 
+                  p: 1.5, 
+                  backgroundColor: 'rgba(211, 47, 47, 0.08)',
+                  borderRadius: 1.5,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1
+                }}
+              >
+                <Typography variant="caption" sx={{ color: 'error.main', fontWeight: 500 }}>
+                  ⚠️ Seleziona esattamente 2 giocatori per formare una coppia
+                </Typography>
+              </Box>
+            )}
+            {selectedPlayerIds.length === 2 && (
+              <Box 
+                sx={{ 
+                  mt: 1.5, 
+                  p: 1.5, 
+                  backgroundColor: 'rgba(46, 125, 50, 0.08)',
+                  borderRadius: 1.5,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1
+                }}
+              >
+                <Typography variant="caption" sx={{ color: 'success.main', fontWeight: 500 }}>
+                  ✓ Coppia completa! Pronta per essere salvata
+                </Typography>
+              </Box>
+            )}
+          </Box>
+        </Box>
+      </CustomDialog>
     </Box>
   );
 };
