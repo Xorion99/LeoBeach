@@ -1,3 +1,4 @@
+using LeoBeach.Application.Players.Services;
 using LeoBeach.Infrastructure.Persistence;
 using LeoBeach.Interfaces;
 using LeoBeach.Services;
@@ -35,6 +36,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IPairService, PairService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
+builder.Services.AddScoped<IPlayerStatsService, PlayerStatsService>();
 
 
 
