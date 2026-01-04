@@ -23,7 +23,8 @@ Se due giocatori vogliono giocare ma non hanno compagni, **LeoBeach** offrirà u
 
 🎯 Setup Completo - Passo per Passo
 # 1. Prerequisiti (Installa prima di tutto)
-.NET 8 SDK
+**.NET 8 SDK**
+
 winget install Microsoft.DotNet.SDK.8  # Windows
 O scarica da: https://dotnet.microsoft.com/download/dotnet/8.0
 
@@ -41,9 +42,9 @@ cd LeoBeach
 
 # 3. Backend (.NET API)
 LeoBeach/
-├── Api/           # Backend .NET
-├── ClientApp/     # Frontend React
-└── Database/      # Script SQL
+Api/           # Backend .NET
+ClientApp/     # Frontend React
+Database/      # Script SQL
 
 Vai nella cartella API
 - cd Api
