@@ -16,9 +16,21 @@ public class ScoutsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateScoutDto dto)
     {
-        var result = await _service.CreateScoutAsync(dto);
-        return Ok(result);
+        if (dto.PairId == Guid.Empty)
+            return BadRequest("PairId non valido");
+
+        try
+        {
+            var result = await _service.CreateScoutAsync(dto);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            // Restituisce il messaggio di errore per debug
+            return StatusCode(500, ex.Message);
+        }
     }
+
 
     [HttpGet("{playerId}/player-stats")]
     public async Task<ActionResult<PlayerStatsDto>> GetPlayerStats(Guid playerId)
@@ -33,4 +45,21 @@ public class ScoutsController : ControllerBase
         var result = await _service.GetPairStatsAsync(pairId);
         return Ok(result);
     }
+
+
+    [HttpPut("{scoutId}/events/{skillId}")]
+    public async Task<IActionResult> UpdateScoutEvent(Guid scoutId, Guid skillId, [FromBody] UpdateScoutEventDto dto)
+    {
+        try
+        {
+            var result = await _service.UpdateScoutEventAsync(scoutId, skillId, dto.Value);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+
 }

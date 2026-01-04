@@ -41,12 +41,12 @@ export const Pairs: React.FC = () => {
 
   const fetchPairs = async () => {
     const res = await getPairs();
-    setPairs(res.data);
+    setPairs(Array.isArray(res) ? res : res?.data || []);
   };
 
   const fetchAllPlayers = async () => {
     const res = await getPlayers();
-    setAllPlayers(res.data);
+    setAllPlayers(Array.isArray(res) ? res : res?.data || []);
   };
 
   const handleDelete = async (id: string) => {

@@ -15,29 +15,41 @@ namespace LeoBeach.Application.Players.Services
             _context = context;
         }
 
-        public async Task<Scout> CreateScoutAsync(CreateScoutDto dto)
+        public async Task<CreateScoutDto> CreateScoutAsync(CreateScoutDto dto)
         {
+            var pair = await _context.Pairs.FindAsync(dto.PairId);
+            if (pair == null)
+                throw new InvalidOperationException("Pair not found");
+
             var scout = new Scout
             {
                 PairId = dto.PairId,
-                CoachId = dto.CoachId, 
-                CreatedAt = DateTime.UtcNow
+                CoachId = dto.CoachId
             };
-
-            foreach (var e in dto.Events)
-            {
-                scout.Events.Add(new ScoutEvent
-                {
-                    PlayerId = e.PlayerId,
-                    SkillId = e.SkillId,
-                    Value = e.Value,
-                    Timestamp = DateTime.UtcNow
-                });
-            }
 
             _context.Scouts.Add(scout);
             await _context.SaveChangesAsync();
-            return scout;
+
+            foreach (var ev in dto.Events)
+            {
+                var scoutEvent = new ScoutEvent
+                {
+                    ScoutId = scout.Id,
+                    PlayerId = ev.PlayerId,
+                    SkillId = ev.SkillId,
+                    Value = ev.Value
+                };
+                _context.ScoutEvents.Add(scoutEvent);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return new CreateScoutDto
+            {
+                Id = scout.Id,
+                PairId = scout.PairId,
+                CoachId = scout.CoachId
+            };
         }
 
         public async Task<PlayerStatsDto> GetPlayerStatsAsync(Guid playerId)
@@ -110,5 +122,27 @@ namespace LeoBeach.Application.Players.Services
                 Skills = skills
             };
         }
+
+
+        public async Task<ScoutEventDto> UpdateScoutEventAsync(Guid scoutId, Guid skillId, int value)
+        {
+            ScoutEvent? scoutEvent = await _context.ScoutEvents
+                .FirstOrDefaultAsync(se => se.ScoutId == scoutId && se.SkillId == skillId && se.DeletedAt == null);
+
+            if (scoutEvent == null)
+                throw new InvalidOperationException("ScoutEvent non trovato");
+
+            scoutEvent.Value = value;
+            await _context.SaveChangesAsync();
+
+            return new ScoutEventDto
+            {
+                PlayerId = scoutEvent.PlayerId,
+                SkillId = scoutEvent.SkillId,
+                Value = scoutEvent.Value
+            };
+        }
+
+
     }
 }

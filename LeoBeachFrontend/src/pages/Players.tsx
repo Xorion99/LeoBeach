@@ -30,7 +30,7 @@ export const Players: React.FC = () => {
 
   const fetchPlayers = async () => {
     const res = await getPlayers();
-    setPlayers(res.data);
+    setPlayers(Array.isArray(res) ? res : res?.data || []);
   };
 
   const handleDelete = async (id: string) => {

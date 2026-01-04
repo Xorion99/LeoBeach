@@ -5,8 +5,10 @@ namespace LeoBeach.Interfaces
 {
     public interface IScoutService
     {
-        Task<Scout> CreateScoutAsync(CreateScoutDto dto);
+        Task<CreateScoutDto> CreateScoutAsync(CreateScoutDto dto);
         Task<PlayerStatsDto> GetPlayerStatsAsync(Guid playerId);
         Task<PlayerStatsDto> GetPairStatsAsync(Guid pairId);
+        Task<ScoutEventDto> UpdateScoutEventAsync(Guid scoutId, Guid skillId, int value);
+
     }
 }

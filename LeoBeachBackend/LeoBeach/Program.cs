@@ -37,6 +37,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IPairService, PairService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IPlayerStatsService, PlayerStatsService>();
+builder.Services.AddScoped<IScoutService, ScoutService>();
 
 
 
