@@ -17,3 +17,9 @@ export const getPairs = () => api.get("/pairs");
 export const createPair = (data: any) => api.post("/pairs", data);
 export const updatePair = (id: string, data: any) => api.put(`/pairs/${id}`, data);
 export const deletePair = (id: string) => api.delete(`/pairs/${id}`);
+
+
+//stats
+export const getPlayerStats = (playerId: string) =>
+  api.get(`/players/${playerId}/stats`).then((res) => res.data);
+

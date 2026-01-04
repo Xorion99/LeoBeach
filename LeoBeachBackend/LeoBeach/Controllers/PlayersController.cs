@@ -9,17 +9,27 @@ public class PlayersController : ControllerBase
     private readonly IPlayerService _service;
     private readonly IPlayerStatsService _playerStatsService;
 
-    public PlayersController(IPlayerService service) => _service = service;
 
-    [HttpGet] public async Task<IActionResult> GetAll() => Ok(await _service.GetAllAsync());
-    [HttpPost] public async Task<IActionResult> Create(CreatePlayerDto dto) => Ok(await _service.CreateAsync(dto));
-    [HttpPut("{id}")] public async Task<IActionResult> Update(Guid id, CreatePlayerDto dto) => Ok(await _service.UpdateAsync(id, dto));
-    [HttpDelete("{id}")] public async Task<IActionResult> Delete(Guid id) { await _service.DeleteAsync(id); return NoContent(); }
-
-
-    public PlayersController(IPlayerStatsService playerStatsService)
+    public PlayersController(IPlayerService service, IPlayerStatsService playerStatsService)
     {
+        _service = service;
         _playerStatsService = playerStatsService;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll() => Ok(await _service.GetAllAsync());
+
+    [HttpPost]
+    public async Task<IActionResult> Create(CreatePlayerDto dto) => Ok(await _service.CreateAsync(dto));
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(Guid id, CreatePlayerDto dto) => Ok(await _service.UpdateAsync(id, dto));
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        await _service.DeleteAsync(id);
+        return NoContent();
     }
 
     [HttpGet("{playerId}/stats")]
