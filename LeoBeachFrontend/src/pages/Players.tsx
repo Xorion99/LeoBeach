@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { getPlayers, deletePlayer, createPlayer } from "../api";
+import { getPlayers, createPlayer, deletePlayer } from "../api";
 import { PlayerCard } from "../components/PlayerCard";
 import { CustomDialog } from "../components/CustomDialog";
 import {
   Button,
   TextField,
-  Box
+  Box,
+  Typography
 } from "@mui/material";
 
 interface Player {
@@ -18,9 +19,9 @@ interface Player {
 export const Players: React.FC = () => {
   const [players, setPlayers] = useState<Player[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [newPlayerFirstName, setNewPlayerFirstName] = useState("");
-  const [newPlayerLastName, setNewPlayerLastName] = useState("");
-  const [newPlayerBirthDate, setNewPlayerBirthDate] = useState<string>("");
+  const [newFirstName, setNewFirstName] = useState("");
+  const [newLastName, setNewLastName] = useState("");
+  const [newBirthDate, setNewBirthDate] = useState<string | undefined>("");
 
   // Fetch giocatori
   useEffect(() => {
@@ -40,25 +41,29 @@ export const Players: React.FC = () => {
   const handleOpenDialog = () => setDialogOpen(true);
   const handleCloseDialog = () => {
     setDialogOpen(false);
-    setNewPlayerFirstName("");
-    setNewPlayerLastName("");
-    setNewPlayerBirthDate("");
+    setNewFirstName("");
+    setNewLastName("");
+    setNewBirthDate("");
   };
 
   const handleCreatePlayer = async () => {
-    if (!newPlayerFirstName || !newPlayerLastName) {
-      alert("Nome e Cognome sono obbligatori!");
+    if (!newFirstName || !newLastName) {
+      alert("Inserisci nome e cognome!");
       return;
     }
 
-    await createPlayer({
-      firstName: newPlayerFirstName,
-      lastName: newPlayerLastName,
-      birthDate: newPlayerBirthDate ? newPlayerBirthDate : undefined
-    });
-
-    handleCloseDialog();
-    fetchPlayers();
+    try {
+      await createPlayer({
+        firstName: newFirstName,
+        lastName: newLastName,
+        birthDate: newBirthDate || null
+      });
+      handleCloseDialog();
+      fetchPlayers();
+    } catch (err) {
+      console.error(err);
+      alert("Errore durante la creazione del giocatore!");
+    }
   };
 
   return (
@@ -70,7 +75,7 @@ export const Players: React.FC = () => {
         onClick={handleOpenDialog}
         sx={{ mb: 3 }}
       >
-        Crea Giocatore
+        Aggiungi Giocatore
       </Button>
 
       {/* Lista giocatori */}
@@ -84,33 +89,112 @@ export const Players: React.FC = () => {
         />
       ))}
 
-      {/* Dialog per creare giocatore */}
+      {/* Dialog per aggiungere giocatore */}
       <CustomDialog
         open={dialogOpen}
-        title="Crea nuovo giocatore"
+        title="Aggiungi nuovo giocatore"
         onClose={handleCloseDialog}
         onConfirm={handleCreatePlayer}
         confirmText="Salva"
         cancelText="Annulla"
       >
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
-          <TextField
-            label="Nome"
-            value={newPlayerFirstName}
-            onChange={(e) => setNewPlayerFirstName(e.target.value)}
-          />
-          <TextField
-            label="Cognome"
-            value={newPlayerLastName}
-            onChange={(e) => setNewPlayerLastName(e.target.value)}
-          />
-          <TextField
-            label="Data di nascita (facoltativa)"
-            type="date"
-            InputLabelProps={{ shrink: true }}
-            value={newPlayerBirthDate}
-            onChange={(e) => setNewPlayerBirthDate(e.target.value)}
-          />
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 3, mt: 2 }}>
+          {/* Nome */}
+          <Box>
+            <Typography
+              variant="subtitle2"
+              sx={{
+                mb: 1,
+                fontWeight: 600,
+                color: "text.secondary",
+                display: "flex",
+                alignItems: "center",
+                gap: 1
+              }}
+            >
+              ✨ Nome
+            </Typography>
+            <TextField
+              fullWidth
+              placeholder="Es: Mario"
+              value={newFirstName}
+              onChange={(e) => setNewFirstName(e.target.value)}
+              variant="outlined"
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  backgroundColor: 'rgba(0, 0, 0, 0.02)',
+                  '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.04)' },
+                  '&.Mui-focused': { backgroundColor: 'white' }
+                }
+              }}
+            />
+          </Box>
+
+          {/* Cognome */}
+          <Box>
+            <Typography
+              variant="subtitle2"
+              sx={{
+                mb: 1,
+                fontWeight: 600,
+                color: "text.secondary",
+                display: "flex",
+                alignItems: "center",
+                gap: 1
+              }}
+            >
+              📝 Cognome
+            </Typography>
+            <TextField
+              fullWidth
+              placeholder="Es: Rossi"
+              value={newLastName}
+              onChange={(e) => setNewLastName(e.target.value)}
+              variant="outlined"
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  backgroundColor: 'rgba(0, 0, 0, 0.02)',
+                  '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.04)' },
+                  '&.Mui-focused': { backgroundColor: 'white' }
+                }
+              }}
+            />
+          </Box>
+
+          {/* Data di nascita opzionale */}
+          <Box>
+            <Typography
+              variant="subtitle2"
+              sx={{
+                mb: 1,
+                fontWeight: 600,
+                color: "text.secondary",
+                display: "flex",
+                alignItems: "center",
+                gap: 1
+              }}
+            >
+              🎂 Data di nascita (opzionale)
+            </Typography>
+            <TextField
+              fullWidth
+              type="date"
+              value={newBirthDate || ""}
+              onChange={(e) => setNewBirthDate(e.target.value)}
+              variant="outlined"
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  backgroundColor: 'rgba(0, 0, 0, 0.02)',
+                  '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.04)' },
+                  '&.Mui-focused': { backgroundColor: 'white' }
+                }
+              }}
+              InputLabelProps={{ shrink: true }}
+            />
+          </Box>
         </Box>
       </CustomDialog>
     </Box>
