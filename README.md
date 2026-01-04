@@ -1,16 +1,14 @@
 🚀 LeoBeach - Beach Volleyball Manager
-LeoBeach è l'app cross-platform definitiva per gestire: giocatori, coppie, scouting e statistiche in tempo reale!
 
-La mission finale è raccogliere dati su coppie e singoli giocatori, da dare in pasto a modelli AI, per poter
-migliorare e creare strategie di gioco personalizzate. 
+**LeoBeach** è l’app cross-platform pensata per rivoluzionare il beach volley!
 
+Il suo obiettivo principale sarà raccogliere dati di gioco su giocatori e coppie, per poterli utilizzare in **analisi avanzate e modelli di intelligenza artificiale**, con lo scopo di sviluppare strategie personalizzate e aiutare squadre e singoli a migliorare le proprie performance.
 
+In futuro, l’app permetterà anche di gestire giocatori e coppie, creare tornei personalizzati direttamente sulla piattaforma e organizzare partite in modo rapido ed efficiente, **ottimizzando l’organizzazione e la raccolta di statistiche**
 
+Se due giocatori vogliono giocare ma non hanno compagni, **LeoBeach** offrirà un sistema di matchmaking istantaneo in stile “Tinder”, per trovare il partner ideale in base a disponibilità e abilità.
 
-
-
-
-Il progetto è completamente open source, e ogni segnalazione bug, possibile integrazione, o miglioramento è ben accetto.
+**Il progetto è completamente open source, e ogni segnalazione bug, possibile integrazione, o miglioramento è ben accetto.**
 
 
 
@@ -113,17 +111,18 @@ npm start
 
 📱 Struttura File
 LeoBeach/
-├── Api/
-│   ├── Controllers/     # API endpoints
-│   ├── Models/          # Entity POCO
-│   ├── Data/            # DbContext
-│   └── Program.cs       # Configurazione
-├── ClientApp/
-│   ├── src/
-│   │   ├── components/  # React components
-│   │   ├── pages/       # Pagine app
-│   │   └── services/    # API calls
-└── README.md
+Api/
+Controllers/     # API endpoints
+Models/          # Entity POCO
+ Data/            # DbContext
+ Program.cs       # Configurazione
+
+ClientApp/
+src/
+components/  # React components
+pages/       # Pagine app
+ services/    # API calls
+
 
 🎮 Features Principali
   
