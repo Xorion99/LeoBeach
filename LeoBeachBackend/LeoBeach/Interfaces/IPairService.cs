@@ -7,6 +7,8 @@ namespace LeoBeach.Interfaces
         Task<PairDto> CreateAsync(CreatePairDto dto);
         Task<IEnumerable<PairDto>> GetAllAsync();
         Task DeleteAsync(Guid pairId);
+
+        Task<PlayerStatsDto> GetPairStatsAsync(Guid pairId);
     }
 
 }

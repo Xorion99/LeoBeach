@@ -8,9 +8,9 @@ public class Player
     public string FirstName { get; set; } = null!;
     public string LastName { get; set; } = null!;
     public DateOnly? BirthDate { get; set; }
-    public int HeightCm { get; set; }
-    public DominantHand DominantHand { get; set; }
-    public PlayerRole Role { get; set; }
+    public int? HeightCm { get; set; }
+    public DominantHand? DominantHand { get; set; }
+    public PlayerRole? Role { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? DeletedAt { get; set; }
 

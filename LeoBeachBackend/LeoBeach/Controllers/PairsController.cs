@@ -32,4 +32,12 @@ public class PairsController : ControllerBase
         await _service.DeleteAsync(id);
         return NoContent();
     }
+
+    [HttpGet("{pairId}/stats")]
+    public async Task<ActionResult<PlayerStatsDto>> GetPairStats(Guid pairId)
+    {
+        var result = await _service.GetPairStatsAsync(pairId);
+        return Ok(result);
+    }
+
 }

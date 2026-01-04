@@ -72,4 +72,42 @@ public class PairService : IPairService
         pair.DeletedAt = DateTime.UtcNow;
         await _db.SaveChangesAsync();
     }
+
+
+
+    public async Task<PlayerStatsDto> GetPairStatsAsync(Guid pairId)
+    {
+        var events = await _db.ScoutEvents
+            .Where(e =>
+                e.DeletedAt == null &&
+                e.Scout.DeletedAt == null &&
+                e.Scout.PairId == pairId
+            )
+            .Select(e => new
+            {
+                e.Skill.Code,
+                e.Skill.Description,
+                e.Value
+            })
+            .ToListAsync();
+
+        var skills = events
+            .GroupBy(e => new { e.Code, e.Description })
+            .Select(g => new SkillStatsDto
+            {
+                SkillCode = g.Key.Code,
+                SkillDescription = g.Key.Description,
+                Good = g.Count(x => x.Value == 1),
+                Neutral = g.Count(x => x.Value == 0),
+                Bad = g.Count(x => x.Value == -1)
+            })
+            .ToList();
+
+        return new PlayerStatsDto
+        {
+            PlayerId = pairId, 
+            Skills = skills
+        };
+    }
+
 }

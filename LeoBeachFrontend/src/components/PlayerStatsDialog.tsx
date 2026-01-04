@@ -8,7 +8,7 @@ import {
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { getPlayerStats } from "../api";
+import { getPlayerStats, getPairStats } from "../api"; // ⚡ API separate per player e pair
 
 export interface SkillStatsDto {
   skillCode: string;
@@ -19,32 +19,43 @@ export interface SkillStatsDto {
 }
 
 export interface PlayerStatsDto {
-  playerId: string;
-  skills?: SkillStatsDto[]; // ⚠ ora opzionale
-}
-
-interface Player {
-  id: string;
-  firstName: string;
-  lastName: string;
+  playerId?: string; // opzionale se stat coppia
+  pairId?: string;   // opzionale se stat coppia
+  skills?: SkillStatsDto[];
 }
 
 interface Props {
-  player: Player;
+  playerId?: string; // se singolo
+  pairId?: string;   // se coppia
   open: boolean;
   onClose: () => void;
+  title: string; // titolo dinamico (nome giocatore o coppia)
 }
 
-export const PlayerStatsDialog: React.FC<Props> = ({ player, open, onClose }) => {
+export const PlayerStatsDialog: React.FC<Props> = ({
+  playerId,
+  pairId,
+  open,
+  onClose,
+  title,
+}) => {
   const [stats, setStats] = useState<SkillStatsDto[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchStats = async () => {
+    if (!playerId && !pairId) return; // nulla da fare
     setLoading(true);
     try {
-      const res: PlayerStatsDto = await getPlayerStats(player.id);
+      let res: PlayerStatsDto;
 
-      // ⚡ Garantiamo sempre un array
+      if (playerId) {
+        res = await getPlayerStats(playerId); // stats singolo
+      } else if (pairId) {
+        res = await getPairStats(pairId); // stats coppia
+      } else {
+        res = { skills: [] };
+      }
+
       setStats(res.skills ?? []);
     } catch (err) {
       console.error(err);
@@ -56,12 +67,18 @@ export const PlayerStatsDialog: React.FC<Props> = ({ player, open, onClose }) =>
 
   useEffect(() => {
     if (open) fetchStats();
-  }, [open]);
+  }, [open, playerId, pairId]);
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        Statistiche di {player.firstName} {player.lastName}
+      <DialogTitle
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        Statistiche di {title}
         <IconButton onClick={onClose}>
           <CloseIcon />
         </IconButton>
