@@ -51,9 +51,9 @@ public class PlayerStatsService : IPlayerStatsService
             {
                 SkillCode = g.Key.Code,
                 SkillDescription = g.Key.Description,
-                Good = g.Count(x => x.Value == 1),
+                Good = g.Count(x => x.Value > 0),
                 Neutral = g.Count(x => x.Value == 0),
-                Bad = g.Count(x => x.Value == -1)
+                Bad = g.Count(x => x.Value < 0)
             })
             .ToList();
 
@@ -63,9 +63,9 @@ public class PlayerStatsService : IPlayerStatsService
             {
                 SkillCode = g.Key.Code,
                 SkillDescription = g.Key.Description,
-                Good = g.Count(x => x.Value == 1),
+                Good = g.Count(x => x.Value > 0),
                 Neutral = g.Count(x => x.Value == 0),
-                Bad = g.Count(x => x.Value == -1)
+                Bad = g.Count(x => x.Value < 0)
             })
             .ToList();
 

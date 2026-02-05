@@ -27,5 +27,11 @@ export const createScout = (data: any) =>
   api.post("/scouts", data).then(res => res.data);
 export const getScout = (scoutId: string) =>
   api.get(`/scouts/${scoutId}`).then(res => res.data);
-export const updateScoutEvent = (scoutId: string, skillId: string, value: number) =>
-  api.put(`/scouts/${scoutId}/events/${skillId}`, { value }).then(res => res.data);
+export const getScouts = () =>
+  api.get("/scouts").then(res => res.data);
+export const deleteScout = (scoutId: string) =>
+  api.delete(`/scouts/${scoutId}`).then(res => res.data);
+export const getScoutSkills = (scoutId: string, playerId: string) =>
+  api.get(`/scouts/${scoutId}/skills`, { params: { playerId } }).then(res => res.data);
+export const updateScoutEvent = (scoutId: string, skillId: string, playerId: string, delta: number) =>
+  api.put(`/scouts/${scoutId}/events/${skillId}`, { playerId, delta }).then(res => res.data);

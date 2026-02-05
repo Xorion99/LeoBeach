@@ -1,22 +1,13 @@
-import React, { useState } from "react";
-import { Players } from "./pages/Players";
-import { Pairs } from "./pages/Pairs";
-import { ScoutingBoardDialog } from "./components/CreateScoutDialog";
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Container,
-  Box,
-  Divider,
-  Button
-} from "@mui/material";
+import React from "react";
+import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
+import { Home } from "./pages/Home";
+import { Scouts } from "./pages/Scouts";
+import { AppBar, Toolbar, Typography, Container, Box, Button } from "@mui/material";
 import SportsVolleyballIcon from "@mui/icons-material/SportsVolleyball";
 
 const App: React.FC = () => {
-  const [scoutDialogOpen, setScoutDialogOpen] = useState(false);
   return (
-    <>
+    <BrowserRouter>
       {/* HEADER */}
       <AppBar position="static">
         <Toolbar>
@@ -24,46 +15,25 @@ const App: React.FC = () => {
           <Typography variant="h6" component="div">
             LeoBeach
           </Typography>
-         
+          <Box sx={{ ml: "auto", display: "flex", gap: 1 }}>
+            <Button color="inherit" component={Link} to="/" sx={{ textTransform: "none" }}>
+              Home
+            </Button>
+            <Button color="inherit" component={Link} to="/scouts" sx={{ textTransform: "none" }}>
+              Scout
+            </Button>
+          </Box>
         </Toolbar>
       </AppBar>
 
-      {/* CONTENT */}
-      <Container maxWidth="md" sx={{ mt: 4 }}>
-        <Box sx={{ display: "flex", gap: 2, mb: 4 }}>
-          <Button 
-            variant="contained" 
-            color="success"
-            onClick={() => setScoutDialogOpen(true)}
-          >
-            Crea Scout
-          </Button>
-        </Box>
-
-        <ScoutingBoardDialog 
-          open={scoutDialogOpen} 
-          onClose={() => setScoutDialogOpen(false)} 
-          scoutId="" 
-          pairId="" 
-        />
-
-        <Box mb={4}>
-          <Typography variant="h4" gutterBottom>
-            Giocatori
-          </Typography>
-          <Players />
-        </Box>
-
-        <Divider sx={{ my: 4 }} />
-
-        <Box mb={4}>
-          <Typography variant="h4" gutterBottom>
-            Coppie
-          </Typography>
-          <Pairs />
-        </Box>
+      <Container maxWidth="lg" sx={{ mt: 3 }}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/scouts" element={<Scouts />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </Container>
-    </>
+    </BrowserRouter>
   );
 };
 

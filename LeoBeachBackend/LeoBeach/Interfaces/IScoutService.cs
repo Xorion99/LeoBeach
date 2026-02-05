@@ -8,7 +8,10 @@ namespace LeoBeach.Interfaces
         Task<CreateScoutDto> CreateScoutAsync(CreateScoutDto dto);
         Task<PlayerStatsDto> GetPlayerStatsAsync(Guid playerId);
         Task<PlayerStatsDto> GetPairStatsAsync(Guid pairId);
-        Task<ScoutEventDto> UpdateScoutEventAsync(Guid scoutId, Guid skillId, int value);
+        Task<IReadOnlyList<ScoutSkillDto>> GetScoutSkillsAsync(Guid scoutId, Guid playerId);
+        Task<ScoutEventDto> UpdateScoutEventAsync(Guid scoutId, Guid skillId, Guid playerId, int delta);
+        Task<IReadOnlyList<ScoutListDto>> GetAllScoutsAsync();
+        Task DeleteScoutAsync(Guid scoutId);
 
     }
 }

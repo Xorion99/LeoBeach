@@ -31,6 +31,26 @@ public class ScoutsController : ControllerBase
         }
     }
 
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<ScoutListDto>>> GetAll()
+    {
+        var result = await _service.GetAllScoutsAsync();
+        return Ok(result);
+    }
+
+    [HttpDelete("{scoutId}")]
+    public async Task<IActionResult> Delete(Guid scoutId)
+    {
+        try
+        {
+            await _service.DeleteScoutAsync(scoutId);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
 
     [HttpGet("{playerId}/player-stats")]
     public async Task<ActionResult<PlayerStatsDto>> GetPlayerStats(Guid playerId)
@@ -46,13 +66,25 @@ public class ScoutsController : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet("{scoutId}/skills")]
+    public async Task<ActionResult<IEnumerable<ScoutSkillDto>>> GetScoutSkills(Guid scoutId, [FromQuery] Guid playerId)
+    {
+        if (playerId == Guid.Empty)
+            return BadRequest("playerId non valido");
+
+        var result = await _service.GetScoutSkillsAsync(scoutId, playerId);
+        return Ok(result);
+    }
 
     [HttpPut("{scoutId}/events/{skillId}")]
     public async Task<IActionResult> UpdateScoutEvent(Guid scoutId, Guid skillId, [FromBody] UpdateScoutEventDto dto)
     {
         try
         {
-            var result = await _service.UpdateScoutEventAsync(scoutId, skillId, dto.Value);
+            if (dto.PlayerId == Guid.Empty)
+                return BadRequest("playerId non valido");
+
+            var result = await _service.UpdateScoutEventAsync(scoutId, skillId, dto.PlayerId, dto.Delta);
             return Ok(result);
         }
         catch (Exception ex)

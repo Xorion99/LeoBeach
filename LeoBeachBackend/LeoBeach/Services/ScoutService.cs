@@ -30,19 +30,50 @@ namespace LeoBeach.Application.Players.Services
             _context.Scouts.Add(scout);
             await _context.SaveChangesAsync();
 
-            foreach (var ev in dto.Events)
+            if (dto.Events != null && dto.Events.Count > 0)
             {
-                var scoutEvent = new ScoutEvent
+                foreach (var ev in dto.Events)
                 {
-                    ScoutId = scout.Id,
-                    PlayerId = ev.PlayerId,
-                    SkillId = ev.SkillId,
-                    Value = ev.Value
-                };
-                _context.ScoutEvents.Add(scoutEvent);
-            }
+                    var scoutEvent = new ScoutEvent
+                    {
+                        ScoutId = scout.Id,
+                        PlayerId = ev.PlayerId,
+                        SkillId = ev.SkillId,
+                        Value = ev.Value
+                    };
+                    _context.ScoutEvents.Add(scoutEvent);
+                }
 
-            await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                var playerIds = await _context.PairPlayers
+                    .Where(pp => pp.PairId == dto.PairId && pp.DeletedAt == null)
+                    .Select(pp => pp.PlayerId)
+                    .ToListAsync();
+
+                var skills = await _context.Skills
+                    .Where(s => s.DeletedAt == null && s.IsActive)
+                    .Select(s => s.Id)
+                    .ToListAsync();
+
+                foreach (var playerId in playerIds)
+                {
+                    foreach (var skillId in skills)
+                    {
+                        _context.ScoutEvents.Add(new ScoutEvent
+                        {
+                            ScoutId = scout.Id,
+                            PlayerId = playerId,
+                            SkillId = skillId,
+                            Value = 0
+                        });
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+            }
 
             return new CreateScoutDto
             {
@@ -77,9 +108,9 @@ namespace LeoBeach.Application.Players.Services
                 {
                     SkillCode = g.Key.Code,
                     SkillDescription = g.Key.Description,
-                    Good = g.Count(x => x.Value == 1),
+                    Good = g.Count(x => x.Value > 0),
                     Neutral = g.Count(x => x.Value == 0),
-                    Bad = g.Count(x => x.Value == -1)
+                    Bad = g.Count(x => x.Value < 0)
                 })
                 .ToList();
 
@@ -110,9 +141,9 @@ namespace LeoBeach.Application.Players.Services
                 {
                     SkillCode = g.Key.Code,
                     SkillDescription = g.Key.Description,
-                    Good = g.Count(x => x.Value == 1),
+                    Good = g.Count(x => x.Value > 0),
                     Neutral = g.Count(x => x.Value == 0),
-                    Bad = g.Count(x => x.Value == -1)
+                    Bad = g.Count(x => x.Value < 0)
                 })
                 .ToList();
 
@@ -123,16 +154,70 @@ namespace LeoBeach.Application.Players.Services
             };
         }
 
+        public async Task<IReadOnlyList<ScoutListDto>> GetAllScoutsAsync()
+        {
+            var scouts = await _context.Scouts
+                .Where(s => s.DeletedAt == null)
+                .Include(s => s.Pair)
+                .OrderByDescending(s => s.CreatedAt)
+                .Select(s => new ScoutListDto
+                {
+                    Id = s.Id,
+                    PairId = s.PairId,
+                    PairName = s.Pair.Name,
+                    CreatedAt = s.CreatedAt
+                })
+                .ToListAsync();
 
-        public async Task<ScoutEventDto> UpdateScoutEventAsync(Guid scoutId, Guid skillId, int value)
+            return scouts;
+        }
+
+        public async Task DeleteScoutAsync(Guid scoutId)
+        {
+            var scout = await _context.Scouts.FindAsync(scoutId);
+            if (scout == null)
+                throw new InvalidOperationException("Scout non trovato");
+
+            scout.DeletedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+        }
+
+
+        public async Task<IReadOnlyList<ScoutSkillDto>> GetScoutSkillsAsync(Guid scoutId, Guid playerId)
+        {
+            var skills = await _context.ScoutEvents
+                .Where(se =>
+                    se.ScoutId == scoutId &&
+                    se.PlayerId == playerId &&
+                    se.DeletedAt == null
+                )
+                .Select(se => new ScoutSkillDto
+                {
+                    SkillId = se.SkillId,
+                    SkillCode = se.Skill.Code,
+                    SkillDescription = se.Skill.Description,
+                    Value = se.Value
+                })
+                .OrderBy(se => se.SkillDescription)
+                .ToListAsync();
+
+            return skills;
+        }
+
+        public async Task<ScoutEventDto> UpdateScoutEventAsync(Guid scoutId, Guid skillId, Guid playerId, int delta)
         {
             ScoutEvent? scoutEvent = await _context.ScoutEvents
-                .FirstOrDefaultAsync(se => se.ScoutId == scoutId && se.SkillId == skillId && se.DeletedAt == null);
+                .FirstOrDefaultAsync(se =>
+                    se.ScoutId == scoutId &&
+                    se.SkillId == skillId &&
+                    se.PlayerId == playerId &&
+                    se.DeletedAt == null
+                );
 
             if (scoutEvent == null)
                 throw new InvalidOperationException("ScoutEvent non trovato");
 
-            scoutEvent.Value = value;
+            scoutEvent.Value += delta;
             await _context.SaveChangesAsync();
 
             return new ScoutEventDto
